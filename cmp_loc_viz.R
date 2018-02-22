@@ -52,7 +52,7 @@ ggmap(ph_basemap) +
         axis.text = element_blank(), # change the theme options
         
         axis.ticks = element_blank()) +# remove axis ticks
-  #scale_color_manual()
+  
   scale_color_brewer(palette = "Purples",na.value = "grey50",
                      name = "Distance\nWeighted\nDelay\nHours",
                      labels = c("0-1.68","1.68-11.4","11.4-48.9","> 48.9","NA"))      
