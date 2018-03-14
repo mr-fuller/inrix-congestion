@@ -3,6 +3,7 @@ library(tmap)
 library(ggmap)
 library(ggplot2)
 cmp_locations <- readOGR("C:/Users/fullerm/Documents/NPMRDS/cmp2017/congestion_locations.gpkg")
+npmrds_dwdh <- readOGR("C:/Users/fullerm/OneDrive - TMACOG/Postgres/CMP/Data/npmrds_dwdh.gpkg")
 var_names <- tail(colnames(cmp_locations@data),40)
 
 
