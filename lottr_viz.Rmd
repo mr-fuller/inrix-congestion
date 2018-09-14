@@ -3,16 +3,12 @@ title: "Passenger Travel Time Reliability"
 author: "Mike Fuller"
 date: "September 14, 2018"
 output: pdf_document
-classoption: a3paper, landscape
+classoption: ansiepaper, landscape
 ---
 
 
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r, echo=FALSE, fig.width=16,fig.height=10}
+```{r, echo=FALSE, fig.width=43,fig.height=33, message=FALSE}
 library(rgdal)
 library(tmap)
 library(ggmap)
@@ -86,20 +82,30 @@ sliced <- filter(sliced, year %in% c("2012","2013", "2014", "2015","2016","2017"
 ph_basemap <- get_map(location = c(lon = -83.5254139, lat = 41.4748341), zoom = 10, maptype = "roadmap")
 
 ggmap(ph_basemap) + 
-  geom_line(data = sliced, aes(x= long,y=lat,group = group, col = cut(lottr,c(1,1.25,1.5,1.75,2,4))))+
+  geom_line(data = sliced, size =2, aes(x= long,y=lat,group = group, col = cut(lottr,c(1,1.25,1.5,1.75,2,4))))+
   facet_grid(period_f~year, scales = "free", switch = "both")+
   labs(title = "TMACOG Area Passenger Vehicle Reliability", y = "Time of Day", x = "Year",caption = "source: INRIX, NPMRDS, Google")+
-  theme(plot.title = element_text(hjust = 0.5),
+  theme(plot.title = element_text(hjust = 0.5, size = 40),
         axis.text = element_blank(), # change the theme options
         
-        axis.ticks = element_blank()) +# remove axis ticks
+        axis.ticks = element_blank(), # remove axis ticks
+        strip.text = element_text(size = 20),
+        axis.title.y = element_text(size = 40),
+        axis.title.x = element_text(size = 40),
+        panel.spacing = unit(1, "lines"),
+        plot.caption = element_text(size = 20),
+        legend.title = element_text(size = 20),
+        legend.key.size = unit(3, "lines"),
+        legend.text = element_text(size = 20),
+        text = element_text(size = 20)) +
   
   scale_color_brewer(palette = "RdYlGn", direction = -1,
                      na.value = "grey50",
                      #breaks =c(0,1,1.25,1.5,1.75,2),
-                     name = "Travel\nTime\nReliability\n(LOTTR)"
-                     #labels = c("1-1.25","1.25-1.50","1.50-1.75", "1.75-2", "> 2", "NA")
-                     )
+                     name = "Travel\nTime\nReliability\n(LOTTR)",
+                     labels = c("1-1.25","1.25-1.50","1.50-1.75", "1.75-2", "> 2", "NA")
+                     )+
+  scale_fill_hue(l=45)
 ```
-
+made with R/Rstudio/RMarkdown
 
