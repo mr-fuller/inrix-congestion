@@ -67,7 +67,7 @@ sliced$period_f = factor(sliced$period, levels =c('AM Peak (6-10AM) M-F','Midday
 
 ph_basemap <- get_map(location = c(lon = -83.5249231, lat = 41.5900929), zoom = 11, maptype = "terrain")
 
-ggmap(ph_basemap) + 
+n <- ggmap(ph_basemap) + 
   geom_line(data = sliced, aes(x= long,y=lat,group = group, col = cut(lottr,c(1,1.25,1.5,1.75,2,4))))+
   facet_grid(period_f~year, scales = "free", switch = "both")+
   labs(title = "How Difficult is it to Plan My Trip?", y = "Time of Day", x = "Year",caption = "source: INRIX")+
@@ -82,6 +82,11 @@ ggmap(ph_basemap) +
                      name = "Difficulty\nBased on\nTravel\nTime\nReliability\n(LOTTR)",
                      labels = c("Easy","Moderate","Somewhat Difficult", "Difficult", "Almost Impossible", "NA")
                      )
+n <- n  +scalebar(data = sliced, location="topright",dist = 0.5,height = 0.1)
+north2(n,x=.9,y=.9,symbol=4)
+plot(n)
+
+
 
 
 

@@ -105,6 +105,7 @@ ggmap(ph_basemap) +
                      name = "Travel\nTime\nReliability\n(LOTTR)",
                      labels = c("1-1.25","1.25-1.50","1.50-1.75", "1.75-2", "> 2", "NA")
                      )+
+  scale_bar(location = )
   scale_fill_hue(l=45)
 ```
 made with R/Rstudio/RMarkdown
