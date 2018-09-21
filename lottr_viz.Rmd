@@ -5,7 +5,7 @@ date: "September 14, 2018"
 output: pdf_document
 classoption: ansiepaper, landscape
 ---
-
+\pagenumbering{gobble}
 
 
 ```{r, echo=FALSE, fig.width=43,fig.height=33, message=FALSE}
@@ -14,36 +14,17 @@ library(tmap)
 library(ggmap)
 library(ggplot2)
 library(tidyverse)
-#plot(pressure)
+
 dsn <- "PG:dbname='cmpfy2018' user=postgres password=laskdjfhiweiofoies"
 
 cmp_locations <- readOGR(dsn=dsn,"congestion_lottr")
-#cmp_locations <- readOGR("C:/Users/fullerm/Documents/NPMRDS/cmp2017/congestion_locations.gpkg")
-#npmrds_dwdh <- readOGR("C:/Users/fullerm/OneDrive - TMACOG/Postgres/CMP/Data/npmrds_dwdh.gpkg")
-var_names <- var_names <- c("am_peak_lottr_2017",
-               "midday_lottr_2017",
-               "pm_peak_lottr_2017",
-               "lottr_we_2017",
-               "am_peak_lottr_2016",
-               "midday_lottr_2016",
-               "pm_peak_lottr_2016",
-               "lottr_we_2016",
-               "am_peak_lottr_2015",
-               "midday_lottr_2015",
-               "pm_peak_lottr_2015",
-               "lottr_we_2015",
-               "am_peak_lottr_2014",
-               "midday_lottr_2014",
-               "pm_peak_lottr_2014",
-               "lottr_we_2014",
-               "am_peak_lottr_2013",
-               "midday_lottr_2013",
-               "pm_peak_lottr_2013",
-               "lottr_we_2013",
-               "am_peak_lottr_2012",
-               "midday_lottr_2012",
-               "pm_peak_lottr_2012",
-               "lottr_we_2012")
+
+var_names <- var_names <- c("lottr_amp_2017", "midday_lottr_2017", "pm_peak_lottr_2017", "lottr_we_2017",
+               "am_peak_lottr_2016", "midday_lottr_2016", "pm_peak_lottr_2016", "lottr_we_2016",
+               "am_peak_lottr_2015", "midday_lottr_2015", "pm_peak_lottr_2015", "lottr_we_2015",
+               "am_peak_lottr_2014", "midday_lottr_2014", "pm_peak_lottr_2014", "lottr_we_2014",
+               "am_peak_lottr_2013", "midday_lottr_2013", "pm_peak_lottr_2013", "lottr_we_2013",
+               "am_peak_lottr_2012", "midday_lottr_2012", "pm_peak_lottr_2012", "lottr_we_2012")
 
 
 #clean up data for faceted ggplot
@@ -65,6 +46,7 @@ separated <- separate(gathered,"period",into = c("period","year"),sep = "_(?!.*_
 # remove columns that I don't need (probably optional)
 sliced <- separated #[c(1:7,9,18,19,20)]
 #change values to improve formatting of facet
+sliced[sliced$period == "lottr_amp","period"] <- "AM Peak (6-10AM, M-F)"
 sliced[sliced$period == "am_peak_lottr","period"] <- "AM Peak (6-10AM, M-F)"
 #sliced[sliced$period == "AM Peak","period"] <- "AM Peak (6-9AM)"
 sliced[sliced$period == "pm_peak_lottr","period"] <- "PM Peak (4-8PM, M-F)"
@@ -79,12 +61,12 @@ sliced <- filter(sliced, year %in% c("2012","2013", "2014", "2015","2016","2017"
 
 #get_map()
 
-ph_basemap <- get_map(location = c(lon = -83.5254139, lat = 41.4748341), zoom = 10, maptype = "roadmap")
+ph_basemap <- get_map(location = c(lon = -83.5254139, lat = 41.4748341), zoom = 10, maptype = "terrain")
 
 ggmap(ph_basemap) + 
   geom_line(data = sliced, size =2, aes(x= long,y=lat,group = group, col = cut(lottr,c(1,1.25,1.5,1.75,2,4))))+
   facet_grid(period_f~year, scales = "free", switch = "both")+
-  labs(title = "TMACOG Area Passenger Vehicle Reliability", y = "Time of Day", x = "Year",caption = "source: INRIX, NPMRDS, Google")+
+  labs(title = "TMACOG Area Passenger Vehicle Reliability", y = "Time of Day", x = "Year",caption = "source: INRIX, NPMRDS, Google; Made with R/RStudio/RMarkdown")+
   theme(plot.title = element_text(hjust = 0.5, size = 40),
         axis.text = element_blank(), # change the theme options
         
@@ -102,11 +84,11 @@ ggmap(ph_basemap) +
   scale_color_brewer(palette = "RdYlGn", direction = -1,
                      na.value = "grey50",
                      #breaks =c(0,1,1.25,1.5,1.75,2),
-                     name = "Travel\nTime\nReliability\n(LOTTR)",
+                     name = "Travel\nTime\nReliability\n(LOTTR,\n>1.5 is\nunreliable)",
                      labels = c("1-1.25","1.25-1.50","1.50-1.75", "1.75-2", "> 2", "NA")
-                     )+
-  scale_bar(location = )
-  scale_fill_hue(l=45)
+                     )
+  #scale_bar(location = )
+  #scale_fill_hue(l=45)
 ```
-made with R/Rstudio/RMarkdown
+
 
