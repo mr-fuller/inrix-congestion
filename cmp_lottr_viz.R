@@ -29,19 +29,28 @@ tidied_cmp_locs <- left_join(tidied_cmp_locs,
 gathered <- gather(tidied_cmp_locs,var_names, 
                    key = "period",value = "lottr")
 
-#separate year information from study periods by splitting at last underscore in string
-separated <- separate(gathered,"period",into = c("period","year"),sep = "_(?!.*_)")
+# separate year information from study periods 
+# by splitting at last underscore in string
+separated <- separate(gathered,"period",
+                      into = c("period","year"),
+                      sep = "_(?!.*_)")
 
 #change values to improve formatting of facet
-separated[separated$period == "am_peak_lottr","period"] <- "AM Peak (6-10AM) M-F"
-separated[separated$period == "pm_peak_lottr","period"] <- "PM Peak (4-8PM) M-F"
-separated[separated$period == "lottr_we","period"] <- "Weekend (6AM-8PM, Sat & Sun)"
-separated[separated$period == "midday_lottr","period"] <- "Midday (10AM-4PM) M-F"
+separated[separated$period == 
+          "am_peak_lottr","period"] <- "AM Peak (6-10AM) M-F"
+separated[separated$period == 
+          "pm_peak_lottr","period"] <- "PM Peak (4-8PM) M-F"
+separated[separated$period == 
+          "lottr_we","period"] <- "Weekend (6AM-8PM, Sat & Sun)"
+separated[separated$period == 
+          "midday_lottr","period"] <- "Midday (10AM-4PM) M-F"
 
 #create factors of periods so plot order is the way I want it
 separated$period_f = factor(separated$period, 
-                            levels =c('AM Peak (6-10AM) M-F','Midday (10AM-4PM) M-F',
-                            'PM Peak (4-8PM) M-F','Weekend (6AM-8PM, Sat & Sun)'))
+                            levels =c('AM Peak (6-10AM) M-F',
+                                      'Midday (10AM-4PM) M-F',
+                                      'PM Peak (4-8PM) M-F',
+                                      'Weekend (6AM-8PM, Sat & Sun)'))
 
 #get map
 ph_basemap <- get_map(location = c(lon = -83.5249231,
@@ -49,16 +58,21 @@ ph_basemap <- get_map(location = c(lon = -83.5249231,
                       zoom = 10, maptype = "terrain")
 
 ggmap(ph_basemap) + 
-  geom_line(data = separated, aes(x= long,y=lat,group = group, 
-                                  col = cut(lottr,c(1,1.25,1.5,1.75,2,4))))+
+  geom_line(data = separated, 
+            aes(x= long,y=lat,group = group, 
+            col = cut(lottr,c(1,1.25,1.5,1.75,2,4))))+
   facet_grid(period_f~year, scales = "free", switch = "both")+
   labs(title = "TMACOG Area Passenger Vehicle Reliability", 
-       y = "Time of Day", x = "Year",caption = "source: INRIX")+
-  theme(plot.title = element_text(hjust = 0.5), axis.text = element_blank(), # change the theme options
+       y = "Time of Day", x = "Year",
+       caption = "source: INRIX")+
+# change the theme options
+  theme(plot.title = element_text(hjust = 0.5), 
+        axis.text = element_blank(), 
         axis.ticks = element_blank()) +# remove axis ticks
   
-  scale_color_brewer(palette = "RdYlGn", direction = -1, na.value = "grey50",
-                     name = "Difficulty\nBased on\nTravel\nTime\nReliability\n(LOTTR)"
+  scale_color_brewer(palette = "RdYlGn", direction = -1, 
+                     na.value = "grey50",
+  name = "Difficulty\nBased on\nTravel\nTime\nReliability\n(LOTTR)"
                      )
 
 
